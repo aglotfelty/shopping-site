@@ -73,7 +73,6 @@ def show_shopping_cart():
         return redirect("/melons")
     # - create a list to hold melon objects and a variable to hold the total
     #   cost of the order
-    melon_ids = cart.keys()
     purchased_melons = []
     cost = 0
     # - loop over the cart dictionary, and for each melon id:
@@ -82,7 +81,7 @@ def show_shopping_cart():
     #    - add this to the order total
     #    - add quantity and total cost as attributes on the Melon object
     #    - add the Melon object to the list created above
-    for melon_id in melon_ids:
+    for melon_id in cart:
         melon = melons.get_by_id(melon_id)
         melon.qty = cart[melon_id]
         melon.cost = melon.price * melon.qty

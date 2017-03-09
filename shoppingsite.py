@@ -66,20 +66,35 @@ def show_shopping_cart():
     # The logic here will be something like:
     #
     # - get the cart dictionary from the session
+    try:
+        cart = session['cart']
+    except KeyError:
+        flash("There is nothing in your cart.")
+        return redirect("/melons")
     # - create a list to hold melon objects and a variable to hold the total
     #   cost of the order
+    melon_ids = cart.keys()
+    purchased_melons = []
+    cost = 0
     # - loop over the cart dictionary, and for each melon id:
     #    - get the corresponding Melon object
     #    - compute the total cost for that type of melon
     #    - add this to the order total
     #    - add quantity and total cost as attributes on the Melon object
     #    - add the Melon object to the list created above
+    for melon_id in melon_ids:
+        melon = melons.get_by_id(melon_id)
+        melon.qty = cart[melon_id]
+        melon.cost = melon.price * melon.qty
+        cost += melon.cost
+        purchased_melons.append(melon)
     # - pass the total order cost and the list of Melon objects to the template
     #
     # Make sure your function can also handle the case wherein no cart has
     # been added to the session
-
-    return render_template("cart.html")
+    purchased_melons.sort()
+    return render_template("cart.html", purchased_melons=purchased_melons,
+                           cost=cost)
 
 
 @app.route("/add_to_cart/<melon_id>")

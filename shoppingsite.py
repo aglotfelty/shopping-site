@@ -8,6 +8,7 @@ Authors: Joel Burton, Christian Fernandez, Meggie Mahnken, Katie Byers.
 
 
 from flask import Flask, render_template, redirect, flash, session
+from flask_debugtoolbar import DebugToolbarExtension
 import jinja2
 
 import melons
@@ -104,9 +105,11 @@ def add_to_cart(melon_id):
     melon = melons.get_by_id(melon_id)
     # - flash a success message
     flash(melon.common_name + " has been added to your cart!")
-    # - redirect the user to the cart page
 
-    return render_template("cart.html")
+    print session['cart']
+
+    # - redirect the user to the cart page
+    return redirect("/cart")
 
 
 @app.route("/login", methods=["GET"])
@@ -153,4 +156,9 @@ def checkout():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.debug = True
+    app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
+    DebugToolbarExtension(app)
+    app.run()
+    
+
